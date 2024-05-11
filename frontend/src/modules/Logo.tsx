@@ -1,6 +1,6 @@
 import React from "react";
 import Text from "../components/Text";
-import logo_img from "../assets/logo.svg";
+import logo_img from "../image/logo.svg";
 
 const Logo = () => {
   const size = 60;
