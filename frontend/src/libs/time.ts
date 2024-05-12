@@ -22,11 +22,8 @@ const timeDifference = (end: string | Date): string => {
     diffDuration.seconds() > 0 ? `${diffDuration.seconds()} sec` : "",
   ];
 
-  // Filter out empty strings and then slice the first two non-empty components
-  const filteredComponents = components.filter((component) => component !== "").slice(0, 2);
-  return filteredComponents.join(" ");
+  return components.filter((component) => component !== "").join(" ");
 };
-
 
 const formatUnixTimestamp = (timestamp: number) => {
   const date = new Date(timestamp * 1000); // Convert to milliseconds

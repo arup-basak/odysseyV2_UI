@@ -51,7 +51,7 @@ const CountButton = ({
         className="w-full md:w-fit bg-white text-black rounded px-6 hover:bg-gray-200 "
         onClick={() => onSubmit(value)}
       >
-        Buy
+        Mint
       </button>
     </div>
   );

@@ -267,9 +267,9 @@ function App() {
   }
 
   return (
-    <main>
-      <BackgroundImage />
-      <div className="md:mx-auto md:max-w-screen-md m-4 md:m-8 space-y-4 md:space-y-6">
+    <main className="bg-[#31343E]">
+      {/* <BackgroundImage /> */}
+      <div className="md:mx-auto md:max-w-screen-xl m-4 md:m-8 space-y-4 md:space-y-6">
         <div className="flex justify-between">
           <Logo />
           <WalletSelector />
@@ -283,8 +283,8 @@ function App() {
                 className="w-full md:w-1/2 aspect-square rounded-xl"
               />
 
-              <div className="space-y-4 mt-4 md:mt-0 md:w-1/2">
-                <Heading text={collectionName} />
+              <div className="space-y-2 md:space-y-4 mt-4 md:mt-0 md:w-1/2">
+                <Heading text={collectionName} level="h2" />
                 <Text text={odyssey.description} />
                 <div className="space-y-2">
                   {stages.map((stage, index) => {
@@ -308,8 +308,8 @@ function App() {
                             <Text
                               text={
                                 stage.key === "Presale mint stage"
-                                  ? ` Allowlist balance: ${allowlistBalance}`
-                                  : `Publiclist balance: ${publiclistBalance}`
+                                  ? `Per Wallet: ${allowlistBalance}`
+                                  : `Per Wallet: ${publiclistBalance}`
                               }
                               className="text-xs"
                             />
