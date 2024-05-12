@@ -1,23 +1,18 @@
 import { useEffect, useState } from "react";
-import { Layout, Row, Col } from "antd";
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { OdysseyResource } from "./interface/OdysseyTypes";
 import MintedProgress from "./modules/MintedProgress";
-import Card from "./components/Card";
 import Image from "./components/Image";
 import Heading from "./components/Heading";
 import Text from "./components/Text";
-import BackgroundImage from "./modules/BackgroundImage";
 import CountButton from "./components/CountButton";
 import ShowTime from "./components/ShowTime";
 import ShowAPT from "./components/ShowAPT";
-import { LuDot } from "react-icons/lu";
-import OwnedCollectionAsset from "./OwnedCollectionAsset";
 import Logo from "./modules/Logo";
-
+import OwnedCollectionAsset from "./components/OwnedCollectionAsset";
 interface Stage {
   key: string;
   value: {
@@ -267,73 +262,88 @@ function App() {
   }
 
   return (
-    <main className="bg-[#31343E]">
+    <main>
       {/* <BackgroundImage /> */}
-      <div className="md:mx-auto md:max-w-screen-xl m-4 md:m-8 space-y-4 md:space-y-6">
+      <div className="md:mx-auto md:max-w-screen-xl md:m-8 space-y-4 md:space-y-6">
         <div className="flex justify-between">
           <Logo />
           <WalletSelector />
         </div>
-        <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl">
-          {odyssey && (
-            <div className="flex flex-col md:flex-row md:space-x-6">
-              <Image
-                src={odyssey.cover}
-                alt="cover image"
-                className="w-full md:w-1/2 aspect-square rounded-xl"
-              />
+        {odyssey && (
+          <>
+            <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl min-h-[40vh]">
+              <div className="flex flex-col md:flex-row md:space-x-6">
+                <Image
+                  src={odyssey.cover}
+                  alt="cover image"
+                  className="w-full md:w-1/2 aspect-square rounded-xl"
+                />
 
-              <div className="space-y-2 md:space-y-4 mt-4 md:mt-0 md:w-1/2">
-                <Heading text={collectionName} level="h2" />
-                <Text text={odyssey.description} />
-                <div className="space-y-2">
-                  {stages.map((stage, index) => {
-                    const fee = fees.find((fee) => fee.key === stage.key);
+                <div className="space-y-2 md:space-y-4 mt-4 md:mt-0 md:w-1/2">
+                  <Heading text={collectionName} level="h2" />
+                  <Text text={odyssey.description} />
+                  <div className="space-y-2">
+                    {stages.map((stage, index) => {
+                      const fee = fees.find((fee) => fee.key === stage.key);
 
-                    return (
-                      <div
-                        key={index}
-                        className="border border-white border-opacity-30 rounded-xl p-3 md:p-4 grid grid-cols-2"
-                      >
-                        <Heading text={stage.key} level="h6" />
+                      return (
+                        <div
+                          key={index}
+                          className="border border-white border-opacity-30 rounded-xl p-3 md:p-4 grid grid-cols-2"
+                        >
+                          <Text
+                            text={stage.key}
+                            className="text-sm md:text-lg font-semibold"
+                          />
 
-                        <ShowTime
-                          startInTimestamp={stage.value.start_time}
-                          endInTimestamp={stage.value.end_time}
-                        />
+                          <ShowTime
+                            startInTimestamp={stage.value.start_time}
+                            endInTimestamp={stage.value.end_time}
+                          />
 
-                        {fee && (
-                          <>
-                            <ShowAPT value={fee.amount} />
-                            <Text
-                              text={
-                                stage.key === "Presale mint stage"
-                                  ? `Per Wallet: ${allowlistBalance}`
-                                  : `Per Wallet: ${publiclistBalance}`
-                              }
-                              className="text-xs"
-                            />
-                          </>
-                        )}
-                      </div>
-                    );
-                  })}
+                          {fee && (
+                            <>
+                              <ShowAPT value={fee.amount} />
+                              <Text
+                                text={
+                                  stage.key === "Presale mint stage"
+                                    ? `Per Wallet: ${allowlistBalance}`
+                                    : `Per Wallet: ${publiclistBalance}`
+                                }
+                                className="text-xs md:text-base"
+                              />
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <MintedProgress
+                    maxSupply={parseInt(odyssey.collection_size)}
+                    totalMinted={parseInt(odyssey.minted)}
+                  />
+                  <CountButton
+                    onSubmit={handleMint}
+                    minLimit={0}
+                    defaultValue={1}
+                    maxLimit={10}
+                  />
                 </div>
-
-                <MintedProgress
-                  maxSupply={parseInt(odyssey.collection_size)}
-                  totalMinted={parseInt(odyssey.minted)}
-                />
-                <CountButton
-                  onSubmit={handleMint}
-                  minLimit={0}
-                  defaultValue={1}
-                  maxLimit={10}
-                />
               </div>
             </div>
-          )}
-        </div>
+            <div>
+              <Heading text="Your digital assets: " level="h3" />
+              {account && (
+                <OwnedCollectionAsset
+                  accountAddress={account.address}
+                  collectionAddress={odyssey.collection.inner}
+                  aptos={aptos}
+                />
+              )}
+            </div>
+          </>
+        )}
       </div>
     </main>
   );

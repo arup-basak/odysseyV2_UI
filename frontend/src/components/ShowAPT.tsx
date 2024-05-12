@@ -9,7 +9,7 @@ const ShowAPT = ({ value }: { value: string }) => {
   return (
     <Heading
       text={`${formatAPT(parseInt(value))} APT`}
-      className="text-xs"
+      className="text-xs md:text-base"
       level="h6"
     />
   );

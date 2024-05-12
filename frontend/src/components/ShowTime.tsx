@@ -27,7 +27,7 @@ const ShowTime = ({ startInTimestamp, endInTimestamp }: Props) => {
     );
   }
 
-  return <Text text="Ended" />;
+  return <Text text="Ended" className="text-xs md:text-sm" />;
 };
 
 export default ShowTime;
