@@ -13,6 +13,7 @@ import ShowTime from "./components/ShowTime";
 import ShowAPT from "./components/ShowAPT";
 import Logo from "./modules/Logo";
 import OwnedCollectionAsset from "./components/OwnedCollectionAsset";
+import BackgroundImage from "./components/ui/BackgroundImage";
 interface Stage {
   key: string;
   value: {
@@ -263,20 +264,20 @@ function App() {
 
   return (
     <main>
-      {/* <BackgroundImage /> */}
-      <div className="md:mx-auto md:max-w-screen-xl md:m-8 space-y-4 md:space-y-6">
+      <BackgroundImage />
+      <div className="md:mx-auto md:max-w-screen-xl md:m-8 space-y-4 md:space-y-6 overflow-y-scroll">
         <div className="flex justify-between">
           <Logo />
           <WalletSelector />
         </div>
         {odyssey && (
           <>
-            <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl min-h-[40vh]">
-              <div className="flex flex-col md:flex-row md:space-x-6">
+            <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl m-2 md:m-auto min-h-[20vh] max-w-screen-lg">
+              <div className="flex flex-col md:flex-row md:space-x-8">
                 <Image
                   src={odyssey.cover}
                   alt="cover image"
-                  className="w-full md:w-1/2 aspect-square rounded-xl"
+                  className="w-full h-fit md:w-1/2 aspect-square rounded-2xl"
                 />
 
                 <div className="space-y-2 md:space-y-4 mt-4 md:mt-0 md:w-1/2">
@@ -289,7 +290,7 @@ function App() {
                       return (
                         <div
                           key={index}
-                          className="border border-white border-opacity-30 rounded-xl p-3 md:p-4 grid grid-cols-2"
+                          className="bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl p-3 md:p-4 grid grid-cols-2"
                         >
                           <Text
                             text={stage.key}
@@ -333,7 +334,7 @@ function App() {
               </div>
             </div>
             <div>
-              <Heading text="Your digital assets: " level="h3" />
+              <Heading text="Your Minted NFTs: " level="h3" />
               {account && (
                 <OwnedCollectionAsset
                   accountAddress={account.address}

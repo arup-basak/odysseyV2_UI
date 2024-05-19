@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface Props {
   maxLimit?: number;
@@ -30,30 +31,47 @@ const CountButton = ({
   const buttonHeightWidth = "h-8 w-8"
 
   return (
-    <div className="flex gap-4 select-none">
-      <div className="bg-white p-2 gap-2 rounded shadow flex">
-        <button
-          className={`${flexCenter} ${buttonHeightWidth} text-lg px-2 py-1 rounded hover:bg-gray-200 h-8 w-8`}
+    <motion.div className="flex gap-4 select-none">
+      <motion.div
+        className="bg-white p-2 gap-2 rounded shadow flex border border-white hover:border-blue-500"
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <motion.button
+          className={`${flexCenter} ${buttonHeightWidth} text-lg px-2 py-1 rounded hover:bg-gray-200`}
           onClick={() => handleChangeValue(1)}
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
         >
           +
-        </button>
-        <p className={`${buttonHeightWidth} ${flexCenter}`}>{value}</p>
-        <button
+        </motion.button>
+        <motion.p
+          className={`${buttonHeightWidth} ${flexCenter}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {value}
+        </motion.p>
+        <motion.button
           className={`${flexCenter} ${buttonHeightWidth} text-lg px-2 py-1 rounded hover:bg-gray-200`}
           onClick={() => handleChangeValue(-1)}
+          whileHover={{ scale: 1.2 }}
+          whileTap={{ scale: 0.8 }}
         >
           -
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
-      <button
-        className="w-full md:w-fit bg-white text-black rounded px-6 hover:bg-gray-200 "
+      <motion.button
+        className="w-full md:w-fit bg-white text-black rounded px-6 hover:bg-gray-200 border border-white hover:border-blue-500"
         onClick={() => onSubmit(value)}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
       >
         Mint
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 };
 
