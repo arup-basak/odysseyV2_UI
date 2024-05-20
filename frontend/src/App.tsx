@@ -263,7 +263,7 @@ function App() {
   }
 
   return (
-    <main>
+    <main className="">
       <BackgroundImage />
       <div className="md:mx-auto md:max-w-screen-xl md:m-8 space-y-4 md:space-y-6 overflow-y-scroll">
         <div className="flex justify-between">
@@ -272,7 +272,7 @@ function App() {
         </div>
         {odyssey && (
           <>
-            <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl m-2 md:m-auto min-h-[20vh] max-w-screen-lg">
+            <div className="glass-morphism border border-white border-opacity-50 p-6 md:p-8 rounded-2xl md:m-auto min-h-[20vh] max-w-screen-lg">
               <div className="flex flex-col md:flex-row md:space-x-8">
                 <Image
                   src={odyssey.cover}

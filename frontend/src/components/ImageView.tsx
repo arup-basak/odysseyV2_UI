@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "./Image";
+import { isMobile } from "react-device-detect";
 
 interface ImageViewerProps {
   imageSrc: string;
@@ -8,13 +9,13 @@ interface ImageViewerProps {
 }
 
 const ImageViewer: React.FC<ImageViewerProps> = ({ imageSrc, children }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(isMobile);
 
   return (
     <div
       className="glass-morphism p-4 relative rounded-md"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={() => !isMobile && setIsHovered(true)}
+      onMouseLeave={() => !isMobile && setIsHovered(false)}
     >
       <Image
         src={imageSrc}

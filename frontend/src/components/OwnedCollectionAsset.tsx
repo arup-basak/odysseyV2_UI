@@ -6,6 +6,7 @@ import { TokenMetadata } from "../interface/TokenMetadata";
 import Image from "./Image";
 import Heading from "./Heading";
 import ImageViewer from "./ImageView";
+import { FaXTwitter } from "react-icons/fa6";
 
 interface Props {
   accountAddress: string;
@@ -19,7 +20,7 @@ const OwnedAssetsComponent: React.FC<Props> = ({
   aptos,
 }) => {
   const [ownedAssets, setOwnedAssets] =
-    useState<TokenMetadata[]>(sampleTokenMetadata);
+    useState<TokenMetadata[]>([]);
 
   const fetchMetadata = async (uri: string) => {
     const response = await fetch(uri);
@@ -68,26 +69,29 @@ const OwnedAssetsComponent: React.FC<Props> = ({
     }
   };
 
-  // useEffect(() => {
-  //   fetchOwnedAssets();
-  //   const interval = setInterval(fetchOwnedAssets, 10000); // Polling every 10 seconds
+  useEffect(() => {
+    fetchOwnedAssets();
+    const interval = setInterval(fetchOwnedAssets, 10000); // Polling every 10 seconds
 
-  //   return () => clearInterval(interval); // Cleanup function to clear the interval
-  // }, [accountAddress, collectionAddress]);
+    return () => clearInterval(interval); // Cleanup function to clear the interval
+  }, [accountAddress, collectionAddress]);
   return (
-    <div className="flex flex-wrap gap-8 h-screen w-screen">
-      {}
+    <div className="grid grid-cols-2 md:grid-cols-4 md:gap-8 h-screen w-screen">
       {ownedAssets.map((asset, index) => (
         <div key={index}>
           <ImageViewer imageSrc={asset.metadata.image}>
             <Heading text={asset.token_name} level="h3" />
             <p>ID: {asset.token_data_id}</p>
-            <button>Share it on Twitter</button>
-            {/* {asset.metadata.attributes?.map((attr, idx) => (
-              <Tag style={{ margin: "5px" }} key={idx}>
-                {attr.trait_type}: {attr.value}
-              </Tag>
-            ))} */}
+            <button className="flex gap-2 justify-center items-center">
+              Share it on <FaXTwitter />
+            </button>
+            <div className="flex flex-col">
+              {asset.metadata.attributes?.map((attr, idx) => (
+                <Tag style={{ margin: "5px" }} key={idx}>
+                  {attr.trait_type}: {attr.value}
+                </Tag>
+              ))}
+            </div>
           </ImageViewer>
           {/* <Heading text={asset.token_name} level="h3" />
           <p>ID: {asset.token_data_id}</p>
