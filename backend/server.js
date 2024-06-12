@@ -7,10 +7,16 @@ const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
 const app = express();
-
+const http = require('http');
+const socketIo = require('socket.io');
 app.use(cors()); // Enable CORS for all routes
 
 const odysseyClient = new OdysseyClient();
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+    cors: '*'
+});
 
 // Read the config.json file
 const configData = fs.readFileSync('./config.json', 'utf-8');
@@ -21,18 +27,18 @@ const { collection_name, description, asset_dir } = collection;
 
 // Get the keyfilePath from the storage object
 const keyfilePath = storage.arweave.keyfilePath;
-     
+
 app.get('/api/get-odyssey', async (req, res) => {
     try {
         const aptos = getNetwork(network);
 
         const odysseyResource = await odysseyClient.getOdyssey(aptos, resource_account);
 
-       
+
         if (odysseyResource) {
-        res.json({ odyssey: odysseyResource });
+            res.json({ odyssey: odysseyResource });
         } else {
-        res.json({ odyssey: null });
+            res.json({ odyssey: null });
         }
 
     } catch (error) {
@@ -64,11 +70,11 @@ app.get('/api/allowlist-balance/:address', async (req, res) => {
     try {
         const aptos = getNetwork(network);
         const userBalance = await odysseyClient.getAllowListBalance(aptos, resource_account, address);
-        
+
         if (userBalance) {
-        res.json({ balance: userBalance });
+            res.json({ balance: userBalance });
         } else {
-        res.json({ balance: 0 });
+            res.json({ balance: 0 });
         }
 
     } catch (error) {
@@ -81,11 +87,11 @@ app.get('/api/publiclist-balance/:address', async (req, res) => {
     try {
         const aptos = getNetwork(network);
         const userBalance = await odysseyClient.getPublicListBalance(aptos, resource_account, address);
-        
+
         if (userBalance) {
-        res.json({ balance: userBalance });
+            res.json({ balance: userBalance });
         } else {
-        res.json({ balance: 0 });
+            res.json({ balance: 0 });
         }
 
     } catch (error) {
@@ -157,31 +163,70 @@ function getNetwork(network) {
     let selectedNetwork = Network.DEVNET;
     const lowercaseNetwork = network.toLowerCase();
     switch (lowercaseNetwork) {
-      case "testnet":
-        selectedNetwork = Network.TESTNET;
-        break;
-      case "mainnet":
-        selectedNetwork = Network.MAINNET;
-        break;
-    case "random":
-        selectedNetwork = Network.RANDOMNET;
-        break;
+        case "testnet":
+            selectedNetwork = Network.TESTNET;
+            break;
+        case "mainnet":
+            selectedNetwork = Network.MAINNET;
+            break;
+        case "random":
+            selectedNetwork = Network.RANDOMNET;
+            break;
     }
     const APTOS_NETWORK = selectedNetwork;
     const aptosConfig = new AptosConfig({ network: APTOS_NETWORK });
     const aptos = new Aptos(aptosConfig);
-  
+
     return aptos;
-  }
-  
-  function getAccount(privateKey) {
+}
+
+function getAccount(privateKey) {
     const account = Account.fromPrivateKey({
-      privateKey: new Ed25519PrivateKey(privateKey),
-      legacy: true, // or false, depending on your needs
+        privateKey: new Ed25519PrivateKey(privateKey),
+        legacy: true, // or false, depending on your needs
     });
     return account;
-  }
+}
 
-app.listen(3001, () => {
-  console.log('Server running on port 3001');
+
+io.on('connection', (socket) => {
+    console.log('a user connected');
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
+
+// Function to fetch and broadcast odyssey data
+const broadcastOdysseyData = async () => {
+    try {
+        const aptos = getNetwork(network);
+        const odysseyResource = await odysseyClient.getOdyssey(aptos, resource_account);
+
+        io.emit('odyssey', { odyssey: odysseyResource || null });
+    } catch (error) {
+        console.error('Error reading odyssey:', error.message);
+        io.emit('error', { error: 'Internal Server Error' });
+    }
+};
+
+// Function to fetch and broadcast stage data
+const broadcastStageData = async () => {
+    try {
+        const aptos = getNetwork(network);
+        const odysseyStage = await odysseyClient.getStage(aptos, resource_account);
+
+        io.emit('stage', { stage: odysseyStage || null });
+    } catch (error) {
+        console.error('Error reading stage:', error.message);
+        io.emit('error', { error: 'Internal Server Error' });
+    }
+};
+
+// Set intervals to broadcast data every second
+setInterval(broadcastOdysseyData, 1000);
+setInterval(broadcastStageData, 1000);
+
+server.listen(3001, () => {
+    console.log('Server running on port 3001');
 });
